@@ -1,0 +1,166 @@
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+
+local Window = Rayfield:CreateWindow({
+   Name = "Ninja Katana Simulator",
+   LoadingTitle = "EnchantedV4000",
+   LoadingSubtitle = "by Unknown",
+   ConfigurationSaving = {
+      Enabled = true,
+      FolderName = nil, -- Create a custom folder for your hub/game
+      FileName = "Big Hub"
+   },
+   Discord = {
+      Enabled = true,
+      Invite = "noinvitelink", -- The Discord invite code, do not include discord.gg/. E.g. discord.gg/ABCD would be ABCD
+      RememberJoins = false -- Set this to false to make them join the discord every time they load it up
+   },
+   KeySystem = true, -- Set this to true to use our key system
+   KeySettings = {
+      Title = "NumberOneSubscriberMan",
+      Subtitle = "Key System",
+      Note = "Join The Discord For The Key",
+      FileName = "Key", -- It is recommended to use something unique as other scripts using Rayfield may overwrite your key file
+      SaveKey = true, -- The user's key will be saved, but if you change the key, they will be unable to use your script
+      GrabKeyFromSite = false, -- If this is true, set Key below to the RAW site you would like Rayfield to get the key from
+      Key = {"NumberOneSubscriber"} -- List of keys that will be accepted by the system, can be RAW file links (pastebin, github etc) or simple strings ("hello","key22")
+   }
+})
+
+local Main = Window:CreateTab("Main", 4483362458) -- Title, Image
+
+local isAutoClicking = false -- Variable to track the auto click toggle state
+local autoClickConnection -- To keep track of the auto click connection
+local isAutoRebirthing = false -- Variable to track the auto rebirth toggle state
+local autoRebirthConnection -- To keep track of the auto rebirth connection
+
+-- Auto Click Toggle
+local ToggleClick = Main:CreateToggle({
+   Name = "Auto Click",
+   CurrentValue = false,
+   Flag = "ToggleClick", -- Unique identifier for the configuration
+   Callback = function(Value)
+       isAutoClicking = Value
+       
+       if isAutoClicking then
+           autoClickConnection = game:GetService("RunService").Heartbeat:Connect(function()
+               local args = {
+                   [1] = CFrame.new(620.9310913085938, 60.579044342041016, 6.58908748626709, -0.5239112973213196, -8.617421798362557e-08, 0.8517728447914124, -8.15711445056877e-08, 1, 5.099736455349557e-08, -0.8517728447914124, -4.276199305763839e-08, -0.5239112973213196),
+                   [2] = CFrame.new(613.8692016601562, 57.90454864501953, 17.079540252685547, -0.6263865828514099, -0.22924819588661194, 0.7450404167175293, -0, 0.9557772874832153, 0.29409170150756836, -0.7795126438140869, 0.18421509861946106, -0.5986859798431396)
+               }
+               
+               game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Swing"):FireServer(unpack(args))
+           end)
+       else
+           if autoClickConnection then
+               autoClickConnection:Disconnect()
+               autoClickConnection = nil
+           end
+       end
+   end,
+})
+
+-- Auto Rebirth Toggle
+local ToggleRebirth = Main:CreateToggle({
+   Name = "Auto Rebirth",
+   CurrentValue = false,
+   Flag = "ToggleRebirth", -- Unique identifier for the configuration
+   Callback = function(Value)
+       isAutoRebirthing = Value
+       
+       if isAutoRebirthing then
+           autoRebirthConnection = game:GetService("RunService").Heartbeat:Connect(function()
+               game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Rebirth"):FireServer()
+           end)
+       else
+           if autoRebirthConnection then
+               autoRebirthConnection:Disconnect()
+               autoRebirthConnection = nil
+           end
+       end
+   end,
+})
+
+-- Button for Damage Upgrade
+local ButtonDamage = Main:CreateButton({
+   Name = "Upgrade Damage",
+   Callback = function()
+       local args = {"Damage"}
+       game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Upgrade"):FireServer(unpack(args))
+   end,
+})
+
+-- Button for Health Upgrade
+local ButtonHealth = Main:CreateButton({
+   Name = "Upgrade Health",
+   Callback = function()
+       local args = {"Health"}
+       game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Upgrade"):FireServer(unpack(args))
+   end,
+})
+
+-- Button for WalkSpeed Upgrade
+local ButtonWalkSpeed = Main:CreateButton({
+   Name = "Upgrade WalkSpeed",
+   Callback = function()
+       local args = {"WalkSpeed"}
+       game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Upgrade"):FireServer(unpack(args))
+   end,
+})
+
+-- Button for Inventory Upgrade
+local ButtonInventory = Main:CreateButton({
+   Name = "Upgrade Inventory",
+   Callback = function()
+       local args = {"Inventory"}
+       game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Upgrade"):FireServer(unpack(args))
+   end,
+})
+
+-- Button for JumpPower Upgrade
+local ButtonJumpPower = Main:CreateButton({
+   Name = "Upgrade JumpPower",
+   Callback = function()
+       local args = {"JumpPower"}
+       game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Upgrade"):FireServer(unpack(args))
+   end,
+})
+
+-- Button for Pet Equip Upgrade
+local ButtonPetEquip = Main:CreateButton({
+   Name = "Upgrade Pet Equip",
+   Callback = function()
+       local args = {"Pet Equip"}
+       game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Upgrade"):FireServer(unpack(args))
+   end,
+})
+
+local Main = Window:CreateTab("😈 Misc", 4483362458) -- Title, Image
+
+local godModeEnabled = false
+
+local ToggleGodMode = Main:CreateToggle({
+   Name = "Toggle God Mode",
+   CurrentValue = false,
+   Flag = "ToggleGodMode", -- Unique identifier
+   Callback = function(Value)
+       godModeEnabled = Value
+       local player = game.Players.LocalPlayer
+
+       if godModeEnabled then
+           -- Enable god mode
+           player.Character.Humanoid.MaxHealth = math.huge
+           player.Character.Humanoid.Health = math.huge
+
+           -- Prevent damage
+           player.Character.Humanoid.HealthChanged:Connect(function(health)
+               if health < player.Character.Humanoid.MaxHealth then
+                   player.Character.Humanoid.Health = player.Character.Humanoid.MaxHealth
+               end
+           end)
+       else
+           -- Disable god mode
+           player.Character.Humanoid.MaxHealth = 100 -- Set to default value
+           player.Character.Humanoid.Health = 100 -- Restore health
+       end
+   end,
+})
